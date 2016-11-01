@@ -1,9 +1,7 @@
 package at.ac.tuwien.dbai.hgtools.HypergraphFromSQL;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import at.ac.tuwien.dbai.hgtools.hypergraph.Edge;
 import at.ac.tuwien.dbai.hgtools.hypergraph.Hypergraph;

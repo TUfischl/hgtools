@@ -2,7 +2,6 @@ package at.ac.tuwien.dbai.hgtools.hypergraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,7 +9,6 @@ import java.util.Set;
 
 import at.ac.tuwien.dbai.hgtools.Util.CombinationIterator;
 import at.ac.tuwien.dbai.hgtools.Util.PowerSetIterator;
-import at.ac.tuwien.dbai.hgtools.Util.Ref;
 import lombok.Data;
 
 @Data
