@@ -23,6 +23,7 @@ public class HypergraphFromCSPHelper implements XCallbacks2 {
     private Implem implem = new Implem(this);
 	private Map<XVarInteger,String> mapVar = new LinkedHashMap<>();
 	private Hypergraph H = new Hypergraph();
+	private int iEdge = 0;
     
 	public HypergraphFromCSPHelper(String filename) throws Exception {
 		loadInstance(filename);
@@ -80,7 +81,7 @@ public class HypergraphFromCSPHelper implements XCallbacks2 {
     public void buildCtrExtension(String id, XVarInteger[] list, int[][] tuples, boolean positive, Set<TypeFlag> flags) {
        //Arrays.stream(trVars(list)).forEach(t -> System.out.print(t));
        //System.out.println();
-       H.addEdge(new Edge(trVars(list))); 
+       H.addEdge(new Edge("E"+ ++iEdge,trVars(list))); 
     }
 
 

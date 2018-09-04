@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import at.ac.tuwien.dbai.hgtools.Util.CombinationIterator;
@@ -32,6 +33,29 @@ public class Hypergraph {
    
    public int cntEdges() {
 	   return edges.size();
+   }
+   
+   public String toString() {
+	   String s = "";
+	   
+	   for (String line : toFile()) {
+		   s += line + System.getProperty("line.separator");
+	   }
+	   return s;
+   }
+   
+   public List<String> toFile() {
+	   List<String> out = new LinkedList<String>();
+	   for (Iterator<Edge> it = edges.iterator(); it.hasNext(); ) {
+		   String e = it.next().toString();
+		   if (it.hasNext())
+			   e += ",";
+		   else
+			   e += ".";
+		   out.add(e);
+	   }
+	   return out;
+	   
    }
    
    public int degree() {
@@ -73,6 +97,56 @@ public class Hypergraph {
    }
    
    public int VCdimension() {
+	   int maxVC = (int) Math.floor(((Math.log(cntEdges())/Math.log(2))));
+	   int i;
+	   
+	   //Find the maximum cardinality of a shattered subset of V
+ 	   for (i = 1; i <= maxVC; i++ ) {
+		   boolean shattered = false;
+		   
+		   //For each subset X of size vc check if it is shattered, if X is shattered then vc is at least i
+		   CombinationIterator<String> cit = new CombinationIterator<String>(vertices,i);
+		   while (cit.hasNext() && !shattered) {
+			  boolean checkX = true;
+			  Collection<String> setX = cit.next();
+              PowerSetIterator<String> itPSetX = new PowerSetIterator<String>(setX);
+              
+              //For each A \subseteq X check if there is an edge s.t. A = X \cap e
+              //if there is a subset such that this check fails (checkX = false), then X is not shattered.
+              while (itPSetX.hasNext() && checkX ) {
+            	  Set<String> psetX = itPSetX.next();
+            	  boolean edgeFound = false;
+            	  
+            	  for (Iterator<Edge> it = edges.iterator(); it.hasNext() && !edgeFound; ) {
+            		  Collection<String> helpX = new ArrayList<String>(setX);
+            		  helpX.retainAll(it.next().getVertices());
+            		  if (helpX.size() == psetX.size() && helpX.containsAll(psetX)) {
+            			  edgeFound = true;
+            		  }
+            	  }
+            	  
+            	  if (!edgeFound)
+            		  checkX = false;
+            		  
+              }
+              
+              if (checkX) 
+            	  shattered = true;
+             
+		   }
+		   
+		   if (!shattered)
+			   return i-1;
+	   }
+	   
+	   
+	   return i-1;
+   }
+   
+   
+   /* Implementation might have errors.
+    * 
+    * public int VCdimension() {
 	   boolean found = false;
 	   int maxVC = (int) Math.floor(((Math.log(cntEdges())/Math.log(2))));
 	   int vc;
@@ -111,5 +185,5 @@ public class Hypergraph {
 		   return false;
 	   } else
 		   return true;
-   }
+   }*/
 }

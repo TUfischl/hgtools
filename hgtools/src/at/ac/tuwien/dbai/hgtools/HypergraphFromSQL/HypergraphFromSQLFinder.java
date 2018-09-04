@@ -49,6 +49,7 @@ import net.sf.jsqlparser.expression.JsonExpression;
 import net.sf.jsqlparser.expression.KeepExpression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.MySQLGroupConcat;
+import net.sf.jsqlparser.expression.NotExpression;
 import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.NumericBind;
 import net.sf.jsqlparser.expression.OracleHierarchicalExpression;
@@ -61,11 +62,13 @@ import net.sf.jsqlparser.expression.TimeKeyExpression;
 import net.sf.jsqlparser.expression.TimeValue;
 import net.sf.jsqlparser.expression.TimestampValue;
 import net.sf.jsqlparser.expression.UserVariable;
+import net.sf.jsqlparser.expression.ValueListExpression;
 import net.sf.jsqlparser.expression.WhenClause;
-import net.sf.jsqlparser.expression.WithinGroupExpression;
 import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
+import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseLeftShift;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseOr;
+import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseRightShift;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseXor;
 import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
 import net.sf.jsqlparser.expression.operators.arithmetic.Division;
@@ -83,6 +86,7 @@ import net.sf.jsqlparser.expression.operators.relational.GreaterThanEquals;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
 import net.sf.jsqlparser.expression.operators.relational.ItemsListVisitor;
+import net.sf.jsqlparser.expression.operators.relational.JsonOperator;
 import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
 import net.sf.jsqlparser.expression.operators.relational.Matches;
 import net.sf.jsqlparser.expression.operators.relational.MinorThan;
@@ -93,10 +97,12 @@ import net.sf.jsqlparser.expression.operators.relational.RegExpMatchOperator;
 import net.sf.jsqlparser.expression.operators.relational.RegExpMySQLOperator;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Commit;
 import net.sf.jsqlparser.statement.SetStatement;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitor;
 import net.sf.jsqlparser.statement.Statements;
+import net.sf.jsqlparser.statement.UseStatement;
 import net.sf.jsqlparser.statement.alter.Alter;
 import net.sf.jsqlparser.statement.create.index.CreateIndex;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
@@ -113,6 +119,7 @@ import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.FromItemVisitor;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.LateralSubSelect;
+import net.sf.jsqlparser.statement.select.ParenthesisFromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
@@ -128,6 +135,7 @@ import net.sf.jsqlparser.statement.select.ValuesList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
+import net.sf.jsqlparser.statement.upsert.Upsert;
 
 /**
  * Find all used tables within an select statement.
@@ -438,7 +446,9 @@ public class HypergraphFromSQLFinder implements SelectVisitor, FromItemVisitor, 
     @Override
     public void visit(SubJoin subjoin) {
         subjoin.getLeft().accept(this);
-        subjoin.getJoin().getRightItem().accept(this);
+        for (Join j : subjoin.getJoinList()) {
+        	j.getRightItem().accept(this);
+        }
     }
 
     @Override
@@ -560,10 +570,6 @@ public class HypergraphFromSQLFinder implements SelectVisitor, FromItemVisitor, 
     @Override
     public void visit(SelectExpressionItem item) {
         item.getExpression().accept(this);
-    }
-
-    @Override
-    public void visit(WithinGroupExpression wgexpr) {
     }
 
     @Override
@@ -741,5 +747,59 @@ public class HypergraphFromSQLFinder implements SelectVisitor, FromItemVisitor, 
            tableAliasName = table.getName();
         return tableAliasName;
     }
+
+	@Override
+	public void visit(Commit commit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Upsert upsert) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(UseStatement use) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(BitwiseRightShift aThis) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(BitwiseLeftShift aThis) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(JsonOperator jsonExpr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ValueListExpression valueList) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(NotExpression aThis) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ParenthesisFromItem aThis) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }
